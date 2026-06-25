@@ -230,8 +230,49 @@ function App() {
   const [smsConsent, setSmsConsent] = useState(false)
   const [closetContact, setClosetContact] = useState(false)
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault()
+
+    const scriptUrl = import.meta.env.VITE_GOOGLE_SCRIPT_URL
+    if (!scriptUrl) {
+      console.error('Falta VITE_GOOGLE_SCRIPT_URL en .env')
+      return
+    }
+
+    try {
+      const response = await fetch(scriptUrl, {
+        method: 'POST',
+        body: new URLSearchParams({
+          firstName,
+          lastName,
+          email,
+          selectedStyle,
+          closetContact: String(closetContact),
+          smsConsent: String(smsConsent),
+        }),
+      })
+
+      const text = await response.text()
+      let result = {}
+      try {
+        result = JSON.parse(text)
+      } catch {
+        result = { success: response.ok }
+      }
+
+      if (result.success) {
+        alert('¡Gracias! Ya formas parte de la comunidad.')
+        setFirstName('')
+        setLastName('')
+        setEmail('')
+        setSelectedStyle('Casual')
+        setClosetContact(false)
+        setSmsConsent(false)
+      }
+    } catch (error) {
+      console.error(error)
+      alert('Hubo un error. Intenta de nuevo.')
+    }
   }
 
   const formProps = {
