@@ -54,7 +54,7 @@ function SuccessView({ variant, titleId, showClosetMessage }) {
     <div
       className={
         isMobile
-          ? 'relative z-10 flex w-full flex-col gap-4'
+          ? 'relative z-10 flex w-full flex-col gap-[clamp(0.75rem,3.5vw,1rem)]'
           : 'relative z-10 flex h-full min-h-0 w-full flex-1 flex-col justify-between gap-[1.2cqw]'
       }
     >
@@ -399,22 +399,18 @@ function App() {
           </header>
 
           <div
-            className={`relative overflow-hidden rounded-2xl border border-anna-burgundy-border bg-anna-burgundy shadow-[0_16px_48px_rgba(0,0,0,0.4)] ${
-              isSubmitted
-                ? 'flex min-h-[min(420px,72dvh)] flex-col p-[clamp(1rem,4vw,1.5rem)]'
-                : 'p-[clamp(1rem,4vw,1.5rem)]'
-            }`}
+            className={`relative overflow-hidden rounded-2xl border border-anna-burgundy-border bg-anna-burgundy shadow-[0_16px_48px_rgba(0,0,0,0.4)] p-[clamp(1rem,4vw,1.5rem)]`}
           >
             <div
               className="pointer-events-none absolute inset-0 bg-anna-burgundy-texture opacity-35"
               aria-hidden="true"
             />
             <section
-              className={`relative ${
+              className={
                 isSubmitted
-                  ? 'flex min-h-0 flex-1 flex-col'
-                  : 'grid gap-[clamp(1rem,4vw,1.25rem)]'
-              }`}
+                  ? 'relative'
+                  : 'relative grid gap-[clamp(1rem,4vw,1.25rem)]'
+              }
               aria-labelledby={
                 isSubmitted ? 'success-title-mobile' : 'waitlist-title-mobile'
               }
