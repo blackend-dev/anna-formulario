@@ -383,15 +383,12 @@ function App() {
         <div className="mx-auto flex min-h-dvh w-full max-w-xl flex-col px-[clamp(0.75rem,4vw,1.25rem)] pb-[clamp(1.5rem,6vw,2.5rem)] pt-[clamp(1rem,5vw,1.5rem)]">
           <header className="mb-[clamp(1rem,5vw,1.5rem)] shrink-0 text-center">
             <img
-              className="mx-auto w-full max-w-[min(220px,60vw)]"
-              src="/assets/anna-logo.svg"
-              alt="ANNA"
+              className="mx-auto w-full max-w-[min(280px,72vw)]"
+              src="/assets/anna-marketplace.png"
+              alt="ANNA marketplace"
               width={484}
               height={98}
             />
-            <p className="mt-[-0.25rem] pr-2 text-right font-script text-[clamp(1.35rem,6vw,2rem)] leading-none">
-              marketplace
-            </p>
           </header>
 
           <div
@@ -439,23 +436,20 @@ function App() {
 
       {/* ── Desktop view ── */}
       <div className="relative hidden min-h-dvh overflow-hidden lg:block">
-        <aside className="absolute top-1/2 left-[clamp(1rem,2.5vw,2.5rem)] z-10 w-[min(20vw,240px)] -translate-y-1/2">
-          <div className="w-full max-w-[min(380px,18vw)]">
+        <aside className="absolute top-1/2 left-[clamp(1rem,2.5vw,2.5rem)] z-10 w-[min(28vw,380px)] -translate-y-1/2">
+          <div className="w-full">
             <img
               className="block w-full"
-              src="/assets/anna-logo.svg"
-              alt="ANNA"
+              src="/assets/anna-marketplace.png"
+              alt="ANNA marketplace"
               width={484}
               height={98}
             />
-            <p className="mt-[-0.5rem] pr-3 text-right font-script text-[clamp(1.5rem,3.5vw,3.25rem)] leading-none">
-              marketplace
-            </p>
           </div>
         </aside>
 
-        <section className="flex min-h-dvh items-center justify-center overflow-hidden py-4 pl-[clamp(10rem,22vw,18rem)] pr-4">
-          <div className="@container relative aspect-[1724/2153] h-auto w-[min(calc(100vw-clamp(10rem,22vw,18rem)-2rem),calc((100dvh-2rem)*1724/2153))] max-h-[min(92dvh,1140px)] shrink-0 origin-center drop-shadow-[0_32px_64px_rgba(0,0,0,0.45)]">
+        <section className="flex min-h-dvh items-center justify-center overflow-hidden py-4 pl-[clamp(12rem,28vw,22rem)] pr-4">
+          <div className="@container relative aspect-[1724/2153] h-auto w-[min(calc(100vw-clamp(12rem,28vw,22rem)-2rem),calc((100dvh-2rem)*1724/2153))] max-h-[min(92dvh,1140px)] shrink-0 origin-center drop-shadow-[0_32px_64px_rgba(0,0,0,0.45)]">
             <div className={`${paperSceneClass} z-0`} aria-hidden="true">
               <img
                 className="absolute inset-0 h-full w-full rounded-[1.2cqw] object-fill"
