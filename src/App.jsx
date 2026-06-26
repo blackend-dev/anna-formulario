@@ -192,7 +192,7 @@ function WaitlistForm({
           className={
             isMobile
               ? 'grid grid-cols-1 gap-[clamp(0.85rem,3.5vw,1rem)] min-[400px]:grid-cols-2'
-              : `grid grid-cols-2 @[max-width:560px]:grid-cols-1 ${desktopCard.gapSm}`
+              : `grid grid-cols-2 @max-[560px]:grid-cols-1 ${desktopCard.gapSm}`
           }
         >
           <label className={`grid ${fieldGap}`}>
@@ -210,7 +210,7 @@ function WaitlistForm({
           </label>
 
           <label className={`grid ${fieldGap}`}>
-            <span className={`${labelClass} ${isMobile ? '' : '@[max-width:560px]:opacity-100 opacity-0'}`}>
+            <span className={`${labelClass} ${isMobile ? '' : '@max-[560px]:opacity-100 opacity-0'}`}>
               Apellido
             </span>
             <input
