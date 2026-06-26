@@ -113,6 +113,7 @@ function WaitlistForm({
   setClosetContact,
   smsConsent,
   setSmsConsent,
+  isSubmitting,
   onSubmit,
 }) {
   const isMobile = variant === 'mobile'
@@ -202,6 +203,7 @@ function WaitlistForm({
               className={inputClass}
               placeholder="Nombre"
               value={firstName}
+              disabled={isSubmitting}
               onChange={(event) => setFirstName(event.target.value)}
               autoComplete="given-name"
             />
@@ -217,6 +219,7 @@ function WaitlistForm({
               className={inputClass}
               placeholder="Apellido"
               value={lastName}
+              disabled={isSubmitting}
               onChange={(event) => setLastName(event.target.value)}
               autoComplete="family-name"
             />
@@ -231,6 +234,7 @@ function WaitlistForm({
             className={inputClass}
             placeholder="tu@email.com"
             value={email}
+            disabled={isSubmitting}
             onChange={(event) => setEmail(event.target.value)}
             autoComplete="email"
           />
@@ -253,6 +257,7 @@ function WaitlistForm({
                 type="button"
                 className={styleButtonClass(selectedStyle === style)}
                 aria-pressed={selectedStyle === style}
+                disabled={isSubmitting}
                 onClick={() => setSelectedStyle(style)}
               >
                 {style}
@@ -273,6 +278,7 @@ function WaitlistForm({
             name="closetContact"
             className={checkboxClass}
             checked={closetContact}
+            disabled={isSubmitting}
             onChange={(event) => setClosetContact(event.target.checked)}
           />
           <span>quieres que te contactemos para vender tu clóset</span>
@@ -290,6 +296,7 @@ function WaitlistForm({
             name="smsConsent"
             className={checkboxClass}
             checked={smsConsent}
+            disabled={isSubmitting}
             onChange={(event) => setSmsConsent(event.target.checked)}
           />
           <span>
@@ -300,13 +307,29 @@ function WaitlistForm({
 
         <button
           type="submit"
+          disabled={isSubmitting}
+          aria-busy={isSubmitting}
           className={
             isMobile
-              ? 'mt-1 h-11 cursor-pointer rounded-xl bg-anna-accent text-[clamp(0.875rem,3.8vw,1rem)] font-bold tracking-[0.1em] text-anna-dark uppercase shadow-lg transition-all duration-200 hover:brightness-105 active:scale-[0.99] sm:h-12'
-              : `mt-[0.4cqw] cursor-pointer bg-anna-accent font-bold tracking-[0.1em] text-anna-dark uppercase shadow-[0_0.5cqw_1.22cqw_-0.5cqw_rgba(0,0,0,0.25)] transition-all duration-200 hover:brightness-105 active:scale-[0.99] ${desktopCard.submit}`
+              ? 'mt-1 flex h-11 items-center justify-center gap-2 rounded-xl bg-anna-accent text-[clamp(0.875rem,3.8vw,1rem)] font-bold tracking-[0.1em] text-anna-dark uppercase shadow-lg transition-all duration-200 enabled:cursor-pointer enabled:hover:brightness-105 enabled:active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-75 sm:h-12'
+              : `mt-[0.4cqw] flex items-center justify-center gap-[0.5cqw] bg-anna-accent font-bold tracking-[0.1em] text-anna-dark uppercase shadow-[0_0.5cqw_1.22cqw_-0.5cqw_rgba(0,0,0,0.25)] transition-all duration-200 enabled:cursor-pointer enabled:hover:brightness-105 enabled:active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-75 ${desktopCard.submit}`
           }
         >
-          Quiero ser parte
+          {isSubmitting ? (
+            <>
+              <span
+                className={
+                  isMobile
+                    ? 'size-4 shrink-0 animate-spin rounded-full border-2 border-anna-dark/25 border-t-anna-dark'
+                    : 'size-[1.1cqw] shrink-0 animate-spin rounded-full border-[0.15cqw] border-anna-dark/25 border-t-anna-dark'
+                }
+                aria-hidden="true"
+              />
+              Enviando...
+            </>
+          ) : (
+            'Quiero ser parte'
+          )}
         </button>
       </form>
     </div>
@@ -322,15 +345,19 @@ function App() {
   const [closetContact, setClosetContact] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [submittedClosetContact, setSubmittedClosetContact] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   async function handleSubmit(event) {
     event.preventDefault()
+    if (isSubmitting) return
 
     const scriptUrl = import.meta.env.VITE_GOOGLE_SCRIPT_URL
     if (!scriptUrl) {
       console.error('Falta VITE_GOOGLE_SCRIPT_URL en .env')
       return
     }
+
+    setIsSubmitting(true)
 
     try {
       const response = await fetch(scriptUrl, {
@@ -360,6 +387,8 @@ function App() {
     } catch (error) {
       console.error(error)
       alert('Hubo un error. Intenta de nuevo.')
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -376,6 +405,7 @@ function App() {
     setClosetContact,
     smsConsent,
     setSmsConsent,
+    isSubmitting,
     onSubmit: handleSubmit,
   }
 
