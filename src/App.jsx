@@ -467,7 +467,7 @@ function App() {
 
       {/* ── Desktop view ── */}
       <div className="relative hidden min-h-dvh overflow-hidden lg:block">
-        <aside className="absolute top-[calc(50%-clamp(1.5rem,4.5vh,3.25rem))] left-[clamp(1rem,2.5vw,2.5rem)] z-10 w-[min(28vw,380px)] -translate-y-1/2">
+        <aside className="absolute top-[calc(50%-clamp(1.5rem,4.5vh,3.25rem))] left-[clamp(3.5rem,9vw,10rem)] z-10 w-[min(28vw,380px)] -translate-y-1/2">
           <div className="w-full">
             <img
               className="block w-full"
