@@ -15,18 +15,18 @@ const paperSceneClass =
 
 // Figma card ≈786px wide, 66% of @container → px/786*66 cqw
 const desktopCard = {
-  title: 'text-[clamp(1.5rem,3.84cqw,2.84rem)]',
-  subtitle: 'text-[clamp(0.75rem,1.35cqw,1rem)]',
-  label: 'text-[clamp(0.625rem,0.93cqw,0.75rem)]',
-  input: 'h-[clamp(2.25rem,3.97cqw,3rem)] text-[clamp(0.8rem,1.27cqw,1rem)] rounded-[0.8cqw] px-[1.15cqw]',
-  styleBtn: 'min-h-[clamp(1.5rem,2.1cqw,2rem)] px-[0.9cqw] py-[0.45cqw] text-[clamp(0.625rem,0.93cqw,0.8rem)]',
-  checkbox: 'size-[clamp(0.85rem,1.4cqw,1.1rem)] rounded-[0.45cqw]',
-  checkboxLabel: 'text-[clamp(0.6rem,1.15cqw,0.8rem)]',
+  title: 'text-[clamp(1.65rem,4.4cqw,2.84rem)]',
+  subtitle: 'text-[clamp(0.8rem,1.55cqw,1rem)]',
+  label: 'text-[clamp(0.7rem,1.05cqw,0.8rem)]',
+  input: 'h-[clamp(2.5rem,4.5cqw,3rem)] text-[clamp(0.875rem,1.45cqw,1rem)] rounded-[0.8cqw] px-[1.15cqw]',
+  styleBtn: 'min-h-[clamp(1.65rem,2.35cqw,2rem)] px-[0.9cqw] py-[0.45cqw] text-[clamp(0.7rem,1.05cqw,0.85rem)]',
+  checkbox: 'size-[clamp(0.9rem,1.5cqw,1.1rem)] rounded-[0.45cqw]',
+  checkboxLabel: 'text-[clamp(0.65rem,1.25cqw,0.8rem)]',
   checkboxLabelMobile: 'text-[clamp(0.6rem,2.8vw,0.75rem)]',
-  submit: 'h-[clamp(2.25rem,3.5cqw,3rem)] text-[clamp(0.75rem,1.27cqw,1rem)] rounded-[0.85cqw]',
-  gap: 'gap-[clamp(0.75rem,2.2cqw,1.5rem)]',
-  gapSm: 'gap-[clamp(0.4rem,0.75cqw,0.65rem)]',
-  gapField: 'gap-[clamp(0.35rem,0.55cqw,0.5rem)]',
+  submit: 'h-[clamp(2.5rem,3.85cqw,3rem)] text-[clamp(0.8rem,1.4cqw,1rem)] rounded-[0.85cqw]',
+  gap: 'gap-[clamp(0.65rem,2cqw,1.5rem)]',
+  gapSm: 'gap-[clamp(0.45rem,0.85cqw,0.65rem)]',
+  gapField: 'gap-[clamp(0.4rem,0.6cqw,0.5rem)]',
   gapFieldMobile: 'gap-[clamp(0.35rem,2vw,0.5rem)]',
 }
 
@@ -192,7 +192,7 @@ function WaitlistForm({
           className={
             isMobile
               ? 'grid grid-cols-1 gap-[clamp(0.85rem,3.5vw,1rem)] min-[400px]:grid-cols-2'
-              : `grid grid-cols-2 ${desktopCard.gapSm}`
+              : `grid grid-cols-2 @[max-width:560px]:grid-cols-1 ${desktopCard.gapSm}`
           }
         >
           <label className={`grid ${fieldGap}`}>
@@ -210,7 +210,7 @@ function WaitlistForm({
           </label>
 
           <label className={`grid ${fieldGap}`}>
-            <span className={`${labelClass} ${isMobile ? '' : 'opacity-0'}`}>
+            <span className={`${labelClass} ${isMobile ? '' : '@[max-width:560px]:opacity-100 opacity-0'}`}>
               Apellido
             </span>
             <input
@@ -479,8 +479,8 @@ function App() {
           </div>
         </aside>
 
-        <section className="flex min-h-dvh items-center justify-center overflow-hidden pb-4 pt-0 pl-[clamp(12rem,28vw,22rem)] pr-4">
-          <div className="@container relative aspect-[1724/2153] h-auto w-[min(calc(100vw-clamp(12rem,28vw,22rem)-2rem),calc((100dvh-2rem)*1724/2153))] max-h-[min(88dvh,1080px)] shrink-0 origin-center -translate-y-[clamp(2.5rem,8vh,6.5rem)] drop-shadow-[0_32px_64px_rgba(0,0,0,0.45)]">
+        <section className="flex min-h-dvh items-center justify-center overflow-hidden pb-2 pt-0 pl-[clamp(11rem,26vw,22rem)] pr-3 [@media(max-height:850px)]:pl-[clamp(9.5rem,22vw,18rem)] [@media(max-height:850px)]:pb-1">
+          <div className="@container relative aspect-[1724/2153] h-auto w-[min(calc(100vw-clamp(11rem,26vw,22rem)-1.5rem),calc((100dvh-1rem)*1724/2153))] max-h-[min(94dvh,1080px)] shrink-0 origin-center -translate-y-[clamp(1rem,4.5vh,5.5rem)] [@media(max-height:850px)]:-translate-y-[clamp(0.25rem,1.5vh,1.5rem)] drop-shadow-[0_32px_64px_rgba(0,0,0,0.45)]">
             <div className={`${paperSceneClass} z-0`} aria-hidden="true">
               <img
                 className="absolute inset-0 h-full w-full rounded-[1.2cqw] object-fill"
@@ -501,10 +501,10 @@ function App() {
             </div>
 
             <section
-              className={`absolute top-[45%] left-[18.8%] z-40 w-[66%] rounded-[1.1cqw] border border-anna-burgundy-border bg-anna-burgundy px-[4.2cqw] shadow-[0_0.9cqw_1.7cqw_rgba(0,0,0,0.25)] ${
+              className={`absolute left-[18.2%] z-40 w-[67%] min-h-0 rounded-[1.1cqw] border border-anna-burgundy-border bg-anna-burgundy px-[4.4cqw] shadow-[0_0.9cqw_1.7cqw_rgba(0,0,0,0.25)] ${
                 isSubmitted
-                  ? 'flex min-h-[28.5cqh] flex-col py-[3.4cqw]'
-                  : 'grid max-h-[62cqh] gap-[clamp(0.75rem,2.2cqw,1.75rem)] overflow-y-auto overscroll-contain py-[clamp(2rem,4.8cqw,3.5rem)] [scrollbar-width:thin]'
+                  ? 'top-[45%] flex min-h-[28.5cqh] flex-col py-[3.4cqw]'
+                  : 'top-[42%] bottom-[3%] [@media(max-height:900px)]:bottom-[5%] [@media(max-height:750px)]:bottom-[7%] grid gap-[clamp(0.55rem,1.7cqw,1.5rem)] overflow-y-auto overscroll-contain py-[clamp(1rem,3cqw,3.25rem)] [scrollbar-width:thin]'
               }`}
               aria-labelledby={
                 isSubmitted ? 'success-title-desktop' : 'waitlist-title-desktop'
