@@ -8,9 +8,9 @@
   --font-biro: 'Biro Script reduced', cursive;
   --font-futura: Jost, 'Futura PT', Futura, Inter, system-ui, sans-serif;
   --color-anna-cream: #f8f8f1;
-  --color-anna-burgundy: #3b1512;
-  --color-anna-burgundy-border: #391713;
-  --color-anna-burgundy-texture: #5c1d1d;
+  --color-anna-burgundy: #481c18;
+  --color-anna-burgundy-border: #3d1713;
+  --color-anna-burgundy-texture: #552018;
   --color-anna-accent: #c7878e;
   --color-anna-dark: #53231e;
   --color-anna-muted: #e1d6c6;
@@ -32,6 +32,8 @@
     -moz-osx-font-smoothing: grayscale;
     overflow-x: hidden;
     overflow-y: auto;
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom)
+      env(safe-area-inset-left);
   }
 
   #root {

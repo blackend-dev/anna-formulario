@@ -1,6 +1,13 @@
 import { useState } from 'react'
 import ClosetLayout from '../components/ClosetLayout'
 import ExpandableSection from '../components/ExpandableSection'
+import { closetBoxClass } from '../shared/closetStyles'
+import {
+  hasErrors,
+  validateAboutCloset,
+  validateAboutYou,
+  validateStory,
+} from '../shared/closetValidation'
 
 const STEPS = {
   LANDING: 0,
@@ -194,7 +201,33 @@ const initialForm = {
 }
 
 const inputClass =
-  'h-12 w-full rounded-xl border border-anna-dark/80 bg-anna-cream px-4 text-[0.95rem] text-anna-ink placeholder:text-anna-placeholder outline-none transition-all focus:border-anna-accent focus:ring-2 focus:ring-anna-accent/30'
+  'h-11 w-full rounded-xl border border-anna-dark/80 bg-anna-cream px-3 text-base text-anna-ink placeholder:text-anna-placeholder outline-none transition-all focus:border-anna-accent focus:ring-2 focus:ring-anna-accent/30 sm:h-12 sm:px-4 sm:text-[0.95rem]'
+
+function inputClassWithError(hasError) {
+  return hasError
+    ? `${inputClass} border-anna-accent ring-2 ring-anna-accent/30`
+    : inputClass
+}
+
+function FieldError({ message }) {
+  if (!message) return null
+
+  return (
+    <p className="m-0 text-[0.78rem] leading-snug text-anna-accent" role="alert">
+      {message}
+    </p>
+  )
+}
+
+function SectionError({ message }) {
+  if (!message) return null
+
+  return (
+    <p className="mb-3 text-[0.78rem] leading-snug text-anna-accent" role="alert">
+      {message}
+    </p>
+  )
+}
 
 const labelClass =
   'text-[0.7rem] font-semibold uppercase tracking-[0.1em] text-anna-muted'
@@ -204,7 +237,7 @@ const sectionTitleClass =
 
 const bodyTextClass = 'text-[0.92rem] leading-relaxed text-anna-muted'
 
-const boxClass = 'rounded-2xl border border-anna-dark/35 bg-anna-dark/10'
+const boxClass = closetBoxClass
 
 function BulletList({ items, className = '' }) {
   return (
@@ -224,7 +257,7 @@ function BulletList({ items, className = '' }) {
 
 function PageHeading({ eyebrow, title, subtitle, titleId }) {
   return (
-    <header className="mb-6 sm:mb-8">
+    <header className="mb-4 sm:mb-6 lg:mb-8">
       {eyebrow && (
         <p className="mb-2 text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-anna-accent">
           {eyebrow}
@@ -232,24 +265,28 @@ function PageHeading({ eyebrow, title, subtitle, titleId }) {
       )}
       <h1
         id={titleId}
-        className="anna-diacritics m-0 font-serif text-[clamp(1.6rem,4vw,2.35rem)] leading-[1.1] font-light uppercase text-anna-cream"
+        className="anna-diacritics m-0 font-serif text-[clamp(1.35rem,5.5vw,2.35rem)] leading-[1.12] font-light uppercase text-anna-cream"
       >
         {title}
       </h1>
-      {subtitle && <p className={`mt-3 mb-0 ${bodyTextClass}`}>{subtitle}</p>}
+      {subtitle && (
+        <p className={`mt-2 mb-0 sm:mt-3 ${bodyTextClass} text-[clamp(0.84rem,3.6vw,0.92rem)]`}>
+          {subtitle}
+        </p>
+      )}
     </header>
   )
 }
 
 function NavButtons({ onBack, onNext, nextLabel = 'Continuar', nextDisabled, isSubmitting, isSubmit }) {
   return (
-    <div className="mt-auto flex flex-col-reverse gap-3 border-t border-anna-dark/30 pt-6 sm:flex-row sm:justify-between">
+    <div className="mt-6 flex flex-col-reverse gap-2.5 border-t border-anna-dark/30 pt-4 sm:mt-auto sm:flex-row sm:justify-between sm:gap-3 sm:pt-6">
       {onBack ? (
         <button
           type="button"
           onClick={onBack}
           disabled={isSubmitting}
-          className="flex h-12 items-center justify-center rounded-xl border border-anna-cream/30 px-6 text-[0.82rem] font-semibold uppercase tracking-[0.08em] text-anna-cream transition-colors hover:border-anna-cream hover:bg-anna-dark/20 disabled:opacity-50 sm:min-w-[140px]"
+          className="flex h-11 w-full items-center justify-center rounded-xl border border-anna-cream/30 px-4 text-[0.78rem] font-semibold uppercase tracking-[0.08em] text-anna-cream transition-colors hover:border-anna-cream hover:bg-anna-dark/20 disabled:opacity-50 sm:h-12 sm:min-w-[140px] sm:w-auto sm:px-6 sm:text-[0.82rem]"
         >
           Volver
         </button>
@@ -261,7 +298,7 @@ function NavButtons({ onBack, onNext, nextLabel = 'Continuar', nextDisabled, isS
         onClick={isSubmit ? undefined : onNext}
         disabled={nextDisabled || isSubmitting}
         aria-busy={isSubmitting}
-        className="flex h-12 flex-1 items-center justify-center gap-2 rounded-xl bg-anna-accent px-6 text-[0.82rem] font-bold uppercase tracking-[0.1em] text-anna-dark shadow-[0_8px_24px_rgba(199,135,142,0.35)] transition-all hover:brightness-105 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60 sm:max-w-sm sm:flex-none"
+        className="flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-anna-accent px-4 text-[0.72rem] font-bold leading-tight tracking-[0.08em] text-anna-dark uppercase shadow-[0_8px_24px_rgba(199,135,142,0.35)] transition-all hover:brightness-105 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60 sm:h-12 sm:max-w-sm sm:flex-none sm:px-6 sm:text-[0.82rem] sm:tracking-[0.1em]"
       >
         {isSubmitting ? (
           <>
@@ -284,10 +321,10 @@ function RadioCards({ name, options, value, onChange, disabled }) {
         return (
           <label
             key={option}
-            className={`flex cursor-pointer items-center gap-3 rounded-xl border px-4 py-3.5 transition-all ${
+            className={`flex cursor-pointer items-start gap-3 rounded-xl border px-3 py-3 transition-all sm:items-center sm:px-4 sm:py-3.5 ${
               active
                 ? 'border-anna-accent bg-anna-accent/15 shadow-[inset_0_0_0_1px_rgba(199,135,142,0.4)]'
-                : 'border-anna-dark/50 bg-anna-dark/20 hover:border-anna-accent/40'
+                : 'border-anna-cream/12 bg-anna-burgundy hover:border-anna-accent/40'
             }`}
           >
             <input
@@ -306,7 +343,7 @@ function RadioCards({ name, options, value, onChange, disabled }) {
             >
               {active && <span className="size-2 rounded-full bg-anna-dark" />}
             </span>
-            <span className="text-[0.9rem] leading-snug text-anna-cream">{option}</span>
+            <span className="text-[0.84rem] leading-snug text-anna-cream sm:text-[0.9rem]">{option}</span>
           </label>
         )
       })}
@@ -325,10 +362,10 @@ function ChipSelect({ options, values, onToggle, disabled }) {
             type="button"
             disabled={disabled}
             onClick={() => onToggle(option)}
-            className={`rounded-full border px-3.5 py-2 text-[0.8rem] font-semibold transition-all ${
+            className={`rounded-full border px-3 py-1.5 text-[0.74rem] font-semibold transition-all sm:px-3.5 sm:py-2 sm:text-[0.8rem] ${
               active
                 ? 'border-anna-cream bg-anna-cream text-anna-dark shadow-sm'
-                : 'border-anna-dark/60 bg-anna-dark/25 text-anna-cream hover:border-anna-accent/50'
+                : 'border-anna-cream/12 bg-anna-burgundy text-anna-cream hover:border-anna-accent/50'
             }`}
           >
             {option}
@@ -341,7 +378,7 @@ function ChipSelect({ options, values, onToggle, disabled }) {
 
 function FormSection({ title, hint, children }) {
   return (
-    <section className={`${boxClass} p-4 sm:p-5`}>
+    <section className={`${boxClass} p-3.5 sm:p-4 md:p-5`}>
       <div className="mb-4">
         <h2 className={`m-0 ${sectionTitleClass}`}>{title}</h2>
         {hint && <p className={`mt-1.5 mb-0 ${bodyTextClass} text-[0.85rem]`}>{hint}</p>}
@@ -353,9 +390,24 @@ function FormSection({ title, hint, children }) {
 
 function ClosetForm({ step, setStep, form, setForm, isSubmitting, onSubmit }) {
   const titleId = 'closet-form-title'
+  const [errors, setErrors] = useState({})
 
   function updateField(field, value) {
     setForm((current) => ({ ...current, [field]: value }))
+    setErrors((current) => {
+      if (!current[field]) return current
+      const next = { ...current }
+      delete next[field]
+      return next
+    })
+  }
+
+  function attemptStep(validator) {
+    const stepErrors = validator(form)
+    setErrors(stepErrors)
+    if (!hasErrors(stepErrors)) {
+      goNext()
+    }
   }
 
   function toggleGarmentType(option) {
@@ -365,19 +417,27 @@ function ClosetForm({ step, setStep, form, setForm, isSubmitting, onSubmit }) {
         ? current.garmentTypes.filter((item) => item !== option)
         : [...current.garmentTypes, option],
     }))
+    setErrors((current) => {
+      if (!current.garmentTypes) return current
+      const next = { ...current }
+      delete next.garmentTypes
+      return next
+    })
   }
 
   function goNext() {
+    setErrors({})
     setStep((current) => Math.min(current + 1, STEPS.SUCCESS))
   }
 
   function goBack() {
+    setErrors({})
     setStep((current) => Math.max(current - 1, STEPS.LANDING))
   }
 
   if (step === STEPS.LANDING) {
     return (
-      <div className="flex flex-1 flex-col">
+      <div className="flex flex-col">
         <PageHeading
           titleId={titleId}
           title="Quiero vender mi clóset"
@@ -388,7 +448,7 @@ function ClosetForm({ step, setStep, form, setForm, isSubmitting, onSubmit }) {
           Completa un breve formulario de postulación.
         </p>
 
-        <div className="mb-8 rounded-2xl border border-anna-dark/30 bg-anna-dark/15 p-4 sm:p-5">
+        <div className={`mb-6 ${boxClass} p-3.5 sm:mb-8 sm:p-4 md:p-5`}>
           <p className={`m-0 mb-3 font-semibold text-anna-cream ${bodyTextClass}`}>
             Al finalizar, conoce:
           </p>
@@ -410,7 +470,7 @@ function ClosetForm({ step, setStep, form, setForm, isSubmitting, onSubmit }) {
 
   if (step === STEPS.INTRO) {
     return (
-      <div className="flex flex-1 flex-col">
+      <div className="flex flex-col">
         <PageHeading
           titleId={titleId}
           title="Antes de comenzar"
@@ -434,60 +494,69 @@ function ClosetForm({ step, setStep, form, setForm, isSubmitting, onSubmit }) {
 
   if (step === STEPS.ABOUT_YOU) {
     return (
-      <div className="flex flex-1 flex-col">
+      <div className="flex flex-col">
         <PageHeading titleId={titleId} title="1. Cuéntanos sobre ti" />
 
-        <div className="grid gap-5 sm:grid-cols-2">
+        <div className="grid gap-4 sm:grid-cols-2 sm:gap-5">
           <label className="grid gap-2 sm:col-span-2">
             <span className={labelClass}>Nombre y apellido</span>
             <input
               type="text"
-              className={inputClass}
+              className={inputClassWithError(Boolean(errors.fullName))}
               value={form.fullName}
               onChange={(e) => updateField('fullName', e.target.value)}
               autoComplete="name"
+              aria-invalid={Boolean(errors.fullName)}
             />
+            <FieldError message={errors.fullName} />
           </label>
 
           <label className="grid gap-2 sm:col-span-2">
             <span className={labelClass}>Correo electrónico</span>
             <input
               type="email"
-              className={inputClass}
+              className={inputClassWithError(Boolean(errors.email))}
               value={form.email}
               onChange={(e) => updateField('email', e.target.value)}
               autoComplete="email"
+              aria-invalid={Boolean(errors.email)}
             />
+            <FieldError message={errors.email} />
           </label>
 
           <label className="grid gap-2">
             <span className={labelClass}>WhatsApp (opcional)</span>
             <input
               type="tel"
-              className={inputClass}
+              className={inputClassWithError(Boolean(errors.whatsapp))}
               value={form.whatsapp}
               onChange={(e) => updateField('whatsapp', e.target.value)}
               placeholder="+56 9 ..."
+              aria-invalid={Boolean(errors.whatsapp)}
             />
+            <FieldError message={errors.whatsapp} />
           </label>
 
           <label className="grid gap-2">
             <span className={labelClass}>Instagram (opcional)</span>
             <input
               type="text"
-              className={inputClass}
+              className={inputClassWithError(Boolean(errors.instagram))}
               value={form.instagram}
               onChange={(e) => updateField('instagram', e.target.value)}
               placeholder="@usuario"
+              aria-invalid={Boolean(errors.instagram)}
             />
+            <FieldError message={errors.instagram} />
           </label>
 
           <label className="grid gap-2 sm:col-span-2">
             <span className={labelClass}>Ciudad</span>
             <select
-              className={`${inputClass} appearance-none`}
+              className={`${inputClassWithError(Boolean(errors.city))} appearance-none`}
               value={form.city}
               onChange={(e) => updateField('city', e.target.value)}
+              aria-invalid={Boolean(errors.city)}
             >
               <option value="">Seleccionar ciudad</option>
               {CITY_OPTIONS.map((city) => (
@@ -496,13 +565,13 @@ function ClosetForm({ step, setStep, form, setForm, isSubmitting, onSubmit }) {
                 </option>
               ))}
             </select>
+            <FieldError message={errors.city} />
           </label>
         </div>
 
         <NavButtons
           onBack={goBack}
-          onNext={goNext}
-          nextDisabled={!form.fullName.trim() || !form.email.trim() || !form.city}
+          onNext={() => attemptStep(validateAboutYou)}
         />
       </div>
     )
@@ -510,10 +579,11 @@ function ClosetForm({ step, setStep, form, setForm, isSubmitting, onSubmit }) {
 
   if (step === STEPS.ABOUT_CLOSET) {
     return (
-      <div className="flex flex-1 flex-col gap-5">
+      <div className="flex flex-col gap-4 sm:gap-5">
         <PageHeading titleId={titleId} title="2. Sobre tu clóset" />
 
         <FormSection title="¿Cuántas prendas aproximadamente te gustaría vender?">
+          <SectionError message={errors.garmentQuantity} />
           <RadioCards
             name="garmentQuantity"
             options={GARMENT_QUANTITY_OPTIONS}
@@ -526,6 +596,7 @@ function ClosetForm({ step, setStep, form, setForm, isSubmitting, onSubmit }) {
           title="¿Qué tipo de prendas predominan en tu clóset?"
           hint="Puedes seleccionar más de una."
         >
+          <SectionError message={errors.garmentTypes} />
           <ChipSelect
             options={GARMENT_TYPE_OPTIONS}
             values={form.garmentTypes}
@@ -538,13 +609,20 @@ function ClosetForm({ step, setStep, form, setForm, isSubmitting, onSubmit }) {
           hint="Ejemplo: Zara, Rapsodia, Bimba y Lola, Prüne, Carolina Herrera."
         >
           <textarea
-            className="min-h-24 w-full resize-y rounded-xl border border-anna-dark/80 bg-anna-cream px-4 py-3 text-[0.95rem] text-anna-ink outline-none focus:border-anna-accent focus:ring-2 focus:ring-anna-accent/30"
+            className={`min-h-24 w-full resize-y rounded-xl border bg-anna-cream px-4 py-3 text-[0.95rem] text-anna-ink outline-none focus:ring-2 focus:ring-anna-accent/30 ${
+              errors.brands
+                ? 'border-anna-accent ring-2 ring-anna-accent/30'
+                : 'border-anna-dark/80 focus:border-anna-accent'
+            }`}
             value={form.brands}
             onChange={(e) => updateField('brands', e.target.value)}
+            aria-invalid={Boolean(errors.brands)}
           />
+          <FieldError message={errors.brands} />
         </FormSection>
 
         <FormSection title="¿Cómo describirías el estado general de tus prendas?">
+          <SectionError message={errors.condition} />
           <RadioCards
             name="condition"
             options={CONDITION_OPTIONS}
@@ -555,6 +633,7 @@ function ClosetForm({ step, setStep, form, setForm, isSubmitting, onSubmit }) {
 
         <div className="grid gap-5 lg:grid-cols-2">
           <FormSection title="¿Has vendido ropa anteriormente?">
+            <SectionError message={errors.previousSales} />
             <RadioCards
               name="previousSales"
               options={PREVIOUS_SALES_OPTIONS}
@@ -564,6 +643,7 @@ function ClosetForm({ step, setStep, form, setForm, isSubmitting, onSubmit }) {
           </FormSection>
 
           <FormSection title="¿Estarías dispuesta/o a vender bajo la modalidad de consignación con ANNA?">
+            <SectionError message={errors.consignment} />
             <RadioCards
               name="consignment"
               options={CONSIGNMENT_OPTIONS}
@@ -575,14 +655,7 @@ function ClosetForm({ step, setStep, form, setForm, isSubmitting, onSubmit }) {
 
         <NavButtons
           onBack={goBack}
-          onNext={goNext}
-          nextDisabled={
-            !form.garmentQuantity ||
-            form.garmentTypes.length === 0 ||
-            !form.condition ||
-            !form.previousSales ||
-            !form.consignment
-          }
+          onNext={() => attemptStep(validateAboutCloset)}
         />
       </div>
     )
@@ -590,24 +663,29 @@ function ClosetForm({ step, setStep, form, setForm, isSubmitting, onSubmit }) {
 
   if (step === STEPS.STORY) {
     return (
-      <div className="flex flex-1 flex-col">
+      <div className="flex flex-col">
         <PageHeading titleId={titleId} title="Cuéntanos un poco sobre tu clóset" />
 
-        <label className="grid flex-1 gap-3">
+        <label className="mb-6 grid gap-2">
           <span className={sectionTitleClass}>
             ¿Qué hace especial a las prendas que quieres vender?
           </span>
           <textarea
-            className="min-h-44 w-full flex-1 resize-y rounded-2xl border border-anna-dark/80 bg-anna-cream px-4 py-4 text-[0.95rem] leading-relaxed text-anna-ink outline-none focus:border-anna-accent focus:ring-2 focus:ring-anna-accent/30 sm:min-h-52"
+            className={`min-h-36 w-full resize-y rounded-2xl border bg-anna-cream px-4 py-4 text-[0.95rem] leading-relaxed text-anna-ink outline-none focus:ring-2 focus:ring-anna-accent/30 sm:min-h-40 ${
+              errors.closetStory
+                ? 'border-anna-accent ring-2 ring-anna-accent/30'
+                : 'border-anna-dark/80 focus:border-anna-accent'
+            }`}
             value={form.closetStory}
             onChange={(e) => updateField('closetStory', e.target.value)}
+            aria-invalid={Boolean(errors.closetStory)}
           />
+          <FieldError message={errors.closetStory} />
         </label>
 
         <NavButtons
           onBack={goBack}
-          onNext={goNext}
-          nextDisabled={!form.closetStory.trim()}
+          onNext={() => attemptStep(validateStory)}
         />
       </div>
     )
@@ -615,11 +693,11 @@ function ClosetForm({ step, setStep, form, setForm, isSubmitting, onSubmit }) {
 
   if (step === STEPS.AUTHORIZATION) {
     return (
-      <form className="flex flex-1 flex-col" onSubmit={onSubmit}>
+      <form className="flex flex-col" onSubmit={onSubmit}>
         <PageHeading titleId={titleId} title="Autorizaciones" />
 
         <div className="grid gap-4">
-          <div className="rounded-2xl border border-anna-dark/40 bg-anna-dark/15 p-4 sm:p-5">
+          <div className={`${boxClass} p-4 sm:p-5`}>
             <p className={`m-0 mb-3 ${sectionTitleClass}`}>
               Tratamiento de datos personales
             </p>
@@ -646,7 +724,7 @@ function ClosetForm({ step, setStep, form, setForm, isSubmitting, onSubmit }) {
             </label>
           </div>
 
-          <div className="rounded-2xl border border-anna-dark/40 bg-anna-dark/15 p-4 sm:p-5">
+          <div className={`${boxClass} p-4 sm:p-5`}>
             <p className={`m-0 mb-3 ${sectionTitleClass}`}>Comunicaciones de ANNA</p>
             <label className="flex cursor-pointer items-start gap-3">
               <input
@@ -681,7 +759,7 @@ function ClosetForm({ step, setStep, form, setForm, isSubmitting, onSubmit }) {
   }
 
   return (
-    <div className="flex flex-1 flex-col">
+    <div className="flex flex-col">
       <div className="mb-6 flex items-center gap-4">
         <div className="flex size-14 items-center justify-center rounded-full bg-anna-accent/20 text-2xl text-anna-accent">
           ✓
@@ -709,7 +787,7 @@ function ClosetForm({ step, setStep, form, setForm, isSubmitting, onSubmit }) {
         Mientras tanto, te invitamos a conocer qué buscamos para esta etapa en ANNA.
       </p>
 
-      <div className="mt-8 rounded-3xl border border-anna-burgundy-border/60 bg-anna-burgundy/80 p-5 sm:p-6">
+      <div className={`mt-8 ${boxClass} p-5 sm:p-6`}>
         <p className={`m-0 mb-4 ${bodyTextClass}`}>
           Ahora queremos contarte qué hace especial a una prenda dentro de ANNA.
         </p>
