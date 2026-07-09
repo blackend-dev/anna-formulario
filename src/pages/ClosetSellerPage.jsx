@@ -526,14 +526,27 @@ function ClosetForm({ step, setStep, form, setForm, isSubmitting, onSubmit }) {
 
           <label className="grid gap-2">
             <span className={labelClass}>WhatsApp (opcional)</span>
-            <input
-              type="tel"
-              className={inputClassWithError(Boolean(errors.whatsapp))}
-              value={form.whatsapp}
-              onChange={(e) => updateField('whatsapp', e.target.value)}
-              placeholder="+56 9 ..."
-              aria-invalid={Boolean(errors.whatsapp)}
-            />
+            <div
+              className={`flex overflow-hidden rounded-xl border bg-anna-cream transition-all focus-within:border-anna-accent focus-within:ring-2 focus-within:ring-anna-accent/30 ${
+                errors.whatsapp
+                  ? 'border-anna-accent ring-2 ring-anna-accent/30'
+                  : 'border-anna-dark/80'
+              }`}
+            >
+              <span className="flex h-11 shrink-0 items-center border-r border-anna-dark/20 bg-anna-cream/80 pl-3 pr-2 text-base text-anna-ink select-none sm:h-12 sm:pl-4 sm:text-[0.95rem]">
+                +56
+              </span>
+              <input
+                type="tel"
+                className="h-11 min-w-0 flex-1 border-0 bg-transparent px-3 text-base text-anna-ink placeholder:text-anna-placeholder outline-none sm:h-12 sm:px-4 sm:text-[0.95rem]"
+                value={form.whatsapp}
+                onChange={(e) => updateField('whatsapp', e.target.value.replace(/\D/g, ''))}
+                placeholder="9 ..."
+                inputMode="numeric"
+                autoComplete="tel-national"
+                aria-invalid={Boolean(errors.whatsapp)}
+              />
+            </div>
             <FieldError message={errors.whatsapp} />
           </label>
 
@@ -863,7 +876,7 @@ export default function ClosetSellerPage() {
           formType: 'closet',
           fullName: form.fullName,
           email: form.email,
-          whatsapp: form.whatsapp,
+          whatsapp: form.whatsapp.trim() ? `+56${form.whatsapp.trim()}` : '',
           instagram: form.instagram,
           city: form.city,
           garmentQuantity: form.garmentQuantity,
