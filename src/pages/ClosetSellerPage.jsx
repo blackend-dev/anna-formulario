@@ -811,20 +811,6 @@ function ClosetForm({ step, setStep, form, setForm, isSubmitting, onSubmit }) {
           merezca continuar.
         </p>
 
-        <p className={`m-0 mb-4 font-semibold text-anna-cream ${bodyTextClass}`}>
-          Aquí encontrarás:
-        </p>
-
-        <BulletList
-          className={`mb-5 ${bodyTextClass}`}
-          items={[
-            'Las marcas que forman parte de nuestra curaduría (+).',
-            'El estado esperado de las prendas (+).',
-            'Consejos para preparar tu clóset (+).',
-            'Cómo aumentar las posibilidades de ser seleccionada (+).',
-          ]}
-        />
-
         <div className="grid gap-3">
           {EXPANDABLE_SECTIONS.map((section) => (
             <ExpandableSection key={section.title} title={section.title}>
